@@ -10,11 +10,11 @@ body {
 
 header.header {
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 30px;
     background-color: #FF5733;
     color: #ffffff;
-    padding: 10px;
-    border-radius: 0;
+    padding: 20px;
+    border-radius: 8px;
     position: relative;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     animation: fadeInDown 1s ease-out;
@@ -36,106 +36,163 @@ header.header img.logo {
     left: 20px;
     top: 50%;
     transform: translateY(-50%);
-    height: 60px;
+    height: 80px;
 }
 
 header.header h1 {
-    font-size: 24px;
+    font-size: 36px;
     margin: 0;
     transition: color 0.3s;
 }
 
 header.header p {
-    font-size: 14px;
+    font-size: 18px;
     margin: 5px 0 0 0;
     transition: color 0.3s;
 }
 
 .main-container {
     display: flex;
-    height: calc(100vh - 80px); /* Высота экрана минус высота хедера */
-}
-
-/* Левая и правая боковые панели */
-.sidebar {
-    background-color: #f5f5f5;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 20px;
-    box-sizing: border-box;
-    overflow-y: auto;
-    border-right: 1px solid #ddd;
-    border-left: 1px solid #ddd;
 }
 
-.left-sidebar {
+/* Боковая панель слева */
+.sidebar {
     width: 250px;
+    background-color: #f8f8f8;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: fit-content;
 }
 
-.right-sidebar {
-    width: 200px;
-    border-left: none; /* Правая панель не имеет левой границы */
-}
-
-.right-sidebar h2 {
-    text-align: center;
-    margin-bottom: 15px;
-    font-size: 18px;
-    color: #FF5733;
-}
-
-.right-sidebar .styles-list {
+.button-container {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.right-sidebar .styles-list button {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    padding: 8px;
-    border-radius: 4px;
+button.add-pocket-button,
+button.fill-button,
+button.send-order-button {
+    background-color: #FF5733;
+    border: 2px solid #FF5733;
+    color: #ffffff;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s;
+    position: relative;
 }
 
-.right-sidebar .styles-list button:hover {
+button.add-pocket-button:hover,
+button.fill-button:hover,
+button.send-order-button:hover {
+    background-color: #ffffff;
+    color: #FF5733;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+button.add-pocket-button.generate-pdf-button {
+    background-color: #D9534F; /* Красновато для отличия от остальных кнопок */
+    border: 2px solid #D9534F;
+}
+
+button.add-pocket-button.generate-pdf-button:hover {
+    background-color: #ffffff;
+    color: #D9534F;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.color-picker input[type="color"] {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.color-picker input[type="color"]:hover {
+    transform: scale(1.2);
+}
+
+.logo-upload-container input[type="file"] {
+    display: none;
+}
+
+.logo-upload-container label {
+    cursor: pointer;
+    display: inline-block;
+    padding: 10px 20px;
     background-color: #FF5733;
-    color: #fff;
+    color: #ffffff;
+    border: 2px solid #FF5733;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s, transform 0.3s;
+}
+
+.logo-upload-container label:hover {
+    background-color: #ffffff;
+    color: #FF5733;
     transform: scale(1.05);
 }
 
-/* Центральная рабочая область */
+.tooltip {
+    position: absolute;
+    background-color: #2c3e50;
+    color: #fffaf0;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    display: none;
+    z-index: 3000;
+    transition: opacity 0.3s;
+}
+
+.tooltip::after {
+    content: '';
+    position: absolute;
+    border-width: 5px;
+    border-style: solid;
+}
+
+.tooltip-top::after {
+    border-color: transparent transparent #2c3e50 transparent;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.tooltip-right::after {
+    border-color: transparent #2c3e50 transparent transparent;
+    top: 50%;
+    left: -10px;
+    transform: translateY(-50%);
+}
+
+/* Рабочая область по центру */
 .work-area {
-    flex: 1;
-    padding: 20px;
-    box-sizing: border-box;
+    flex-grow: 1;
+    margin: 0 20px;
     position: relative;
-    display: flex;
-    flex-direction: column;
-}
-
-#pocket-size-container {
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-#pocket-size-container label {
-    font-weight: bold;
-    flex-shrink: 0;
-}
-
-#pocket-size {
-    flex: 1;
 }
 
 .mannequin-container {
-    flex: 1;
     display: flex;
     justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
-    position: relative;
+    margin: 20px 0;
 }
 
 .mannequin {
@@ -188,81 +245,78 @@ header.header p {
     transform: rotate(45deg);
 }
 
-.color-picker {
-    margin-bottom: 20px;
+.calculation-container {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
 }
 
-.color-picker label {
-    margin-right: 10px;
-    display: block;
+#receipt {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #f2f2f2;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 200px;
+    border: 1px solid #FF5733;
 }
 
-.color-picker input[type="color"] {
-    width: 30px;
-    height: 30px;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: transform 0.3s;
+#receipt h3 {
+    margin-top: 0;
+    font-size: 16px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+    color: #2c3e50;
 }
 
-.color-picker input[type="color"]:hover {
-    transform: scale(1.2);
+#receipt div {
+    font-size: 14px;
+    margin-bottom: 5px;
 }
 
-.button-container {
+/* Панель фасонов справа */
+.styles-panel {
+    width: 250px;
+    background-color: #f8f8f8;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    height: fit-content;
+}
+
+.styles-panel h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #2c3e50;
+}
+
+.styles-list {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-button.add-pocket-button,
-button.fill-button,
-button.send-order-button {
-    background-color: #FF5733;
-    border: 2px solid #FF5733;
-    color: #ffffff;
-    padding: 10px 20px;
+.styles-list button {
+    background-color: #3498db;
+    border: none;
+    color: white;
+    padding: 10px;
     text-align: center;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
     font-size: 14px;
     cursor: pointer;
     border-radius: 4px;
-    transition: background-color 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s;
-    position: relative;
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
 
-button.add-pocket-button:hover,
-button.fill-button:hover,
-button.send-order-button:hover {
-    background-color: #ffffff;
-    color: #FF5733;
+.styles-list button:hover {
+    background-color: #2980b9;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-button.send-order-button {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(255, 87, 51, 0.7);
-    }
-    70% {
-        box-shadow: 0 0 0 10px rgba(255, 87, 51, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(255, 87, 51, 0);
-    }
-}
-
+/* Модальные окна */
 .modal {
     display: none;
     position: fixed;
@@ -371,86 +425,36 @@ button.send-order-button {
     transform: scale(1.1);
 }
 
-#receipt {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    background-color: #f2f2f2;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    max-width: 200px;
-    border: 1px solid #FF5733;
-    transition: background-color 0.3s, border-color 0.3s;
-}
-
-#receipt h3 {
-    margin-top: 0;
-    font-size: 16px;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 5px;
-    color: #2c3e50;
-}
-
-#receipt div {
-    font-size: 14px;
-    margin-bottom: 5px;
-}
-
-/* Стили для правой панели */
-.right-sidebar h2 {
-    margin-top: 0;
-}
-
-.right-sidebar .styles-list button {
-    width: 100%;
-    text-align: left;
-    padding: 8px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-.right-sidebar .styles-list button:hover {
-    background-color: #FF5733;
-    color: #fff;
-    transform: scale(1.05);
-}
-
 /* Медиа-запросы для адаптивности */
 @media (max-width: 1200px) {
-    .left-sidebar {
+    .main-container {
+        flex-direction: row;
+    }
+}
+
+@media (max-width: 992px) {
+    .sidebar, .styles-panel {
         width: 200px;
     }
 
-    .right-sidebar {
-        width: 150px;
-    }
-
     .mannequin-container {
-        max-width: 600px;
+        max-width: 700px;
     }
 }
 
 @media (max-width: 768px) {
     .main-container {
         flex-direction: column;
+        align-items: center;
     }
 
-    .sidebar.left-sidebar,
-    .sidebar.right-sidebar {
+    .sidebar, .styles-panel {
         width: 100%;
-        border: none;
+        margin-bottom: 20px;
     }
 
-    .right-sidebar {
-        margin-top: 20px;
-    }
-
-    .work-area {
-        padding: 10px;
+    .mannequin-container {
+        max-width: 100%;
     }
 
     #receipt {
@@ -465,73 +469,4 @@ button.send-order-button {
         top: 10px;
         right: 0;
     }
-
-    .modal-content {
-        width: 90%;
-    }
-
-    .send-order-button {
-        right: 10px;
-        bottom: 10px;
-    }
-}
-
-/* Стили для кнопки генерации PDF */
-.generate-pdf-container {
-    margin-bottom: 20px;
-}
-
-button.add-pocket-button.generate-pdf-button {
-    background-color: #D9534F; /* Красновато для отличия от остальных кнопок */
-    border: 2px solid #D9534F;
-}
-
-button.add-pocket-button.generate-pdf-button:hover {
-    background-color: #ffffff;
-    color: #D9534F;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Дополнительные стили для интерактивности */
-.pocket,
-.logo-upload-container label,
-.add-text-container button,
-.undo-container button,
-.redo-container button,
-.reset-container button,
-.order-container button {
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.pocket:active,
-.logo-upload-container label:active,
-.add-text-container button:active,
-.undo-container button:active,
-.redo-container button:active,
-.reset-container button:active,
-.order-container button:active {
-    transform: scale(0.95);
-    box-shadow: none;
-}
-
-#pocket-size-container label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    transition: color 0.3s;
-}
-
-/* Модальные окна и подсказки остаются без изменений */
-
-/* Обновление чековой позиции */
-#receipt {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-}
-
-/* Обновление манекена для правильного отображения карманов */
-.mannequin {
-    position: relative;
 }
