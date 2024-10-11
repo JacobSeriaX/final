@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Добавление карманов на спецодежду</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<style>
+    body {
+        font-family: 'Times New Roman', Times, serif;
+        background-color: #FFFFFF;
+        color: #2c3e50;
+        margin: 0;
+        padding: 0;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 30px;
+        background-color: #FF5733;
+        color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        position: relative;
+    }
+
+    .header img {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        height: 80px;
+    }
+
+    .header h1 {
+        font-size: 36px;
+    }
+
+    .header p {
+        font-size: 18px;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border: 2px solid #FF5733;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+
+    .mannequin-container {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+    }
+
+    .mannequin {
+        width: 100%;
+        max-width: 800px;
+        height: auto;
+        position: relative;
+        cursor: grab;
+        transition: transform 0.5s ease;
+    }
+
+    .mannequin:active {
+        cursor: grabbing;
+    }
+
+    .pocket {
+        position: absolute;
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+
+    .pocket:hover {
+        transform: scale(1.1);
+    }
+
+    .delete-pocket {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background-color: red;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .color-picker {
+        width: 150px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .color-picker input[type="color"] {
+        width: 30px;
+        height: 30px;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .button-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        position: absolute;
+        top: 60px;
+        left: 20px;
+        width: auto;
+    }
+
+    .button-container > div {
+        margin-bottom: 10px;
+        text-align: left;
+    }
+
+    .add-pocket-button, .fill-button {
+        background-color: #FF5733;
+        border: 2px solid #FF5733;
+        color: #ffffff;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .add-pocket-button:hover, .fill-button:hover {
+        background-color: #ffffff;
+        color: #FF5733;
+    }
+
+    #pocket-size-container {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        background-color: #fffaf0;
+        margin: 5% auto;
+        padding: 20px;
+        border: 2px solid #FF5733;
+        max-width: 800px;
+        border-radius: 8px;
+        animation-name: modalopen;
+        animation-duration: 0.5s;
+    }
+
+    @keyframes modalopen {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .design-item {
+        display: inline-block;
+        width: 120px;
+        margin: 10px;
+        text-align: center;
+        border: 1px solid #cccccc;
+        border-radius: 8px;
+        padding: 10px;
+        background-color: #f9f9f9;
+    }
+
+    .design-img {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto;
+        display: block;
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+
+    .design-img:hover {
+        transform: scale(1.1);
+    }
+
+    .calculation-container {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+
+    #receipt {
+        position: absolute;
+        top: 150px;
+        right: 20px;
+        background-color: #f2f2f2;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 200px;
+        border: 1px solid #FF5733;
+    }
+
+    #receipt h3 {
+        margin-top: 0;
+        font-size: 16px;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
+        color: #2c3e50;
+    }
+
+    #receipt div {
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    .order-button-container {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+    }
+
+    .logo-upload-container input[type="file"] {
+        display: none;
+    }
+
+    .logo-upload-container label {
+        cursor: pointer;
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #FF5733;
+        color: #ffffff;
+        border: 2px solid #FF5733;
+        border-radius: 4px;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .logo-upload-container label:hover {
+        background-color: #ffffff;
+        color: #FF5733;
+    }
+
+    .tooltip {
+        position: absolute;
+        background-color: #2c3e50;
+        color: #fffaf0;
+        padding: 10px;
+        border-radius: 4px;
+        font-size: 14px;
+        display: none;
+        z-index: 10;
+    }
+
+    .tooltip::after {
+        content: '';
+        position: absolute;
+        border-width: 5px;
+        border-style: solid;
+    }
+
+    .tooltip-top::after {
+        border-color: transparent transparent #2c3e50 transparent;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+    }
+
+    .tooltip-right::after {
+        border-color: transparent #2c3e50 transparent transparent;
+        top: 50%;
+        right: 100%;
+        margin-top: -5px;
+    }
+
+    /* Media Queries */
+    @media (max-width: 768px) {
+        .button-container {
+            position: relative;
+            top: 20px;
+            left: 0;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .button-container > div {
+            margin: 5px;
+        }
+
+        .mannequin {
+            width: 100%;
+            height: auto;
+        }
+
+        #pocket-size-container {
+            position: relative;
+            top: 10px;
+            left: 0;
+            margin-bottom: 10px;
+        }
+
+        #receipt {
+            position: relative;
+            top: 10px;
+            right: 0;
+            max-width: 100%;
+        }
+
+        .calculation-container {
+            position: relative;
+            top: 10px;
+            right: 0;
+        }
+
+        .modal-content {
+            width: 90%;
+        }
+    }
+</style>
+</head>
+<body>
+    <div class="header">
+        <img src="/img/41255765_1920.png" alt="Logo">
+        <h1>Дизайн спецодежды</h1>
+        <p>Создайте уникальный дизайн для вашей спецодежды, добавляя карманы, материалы и фасоны.</p>
+    </div>
+    <div class="container">
+        <div id="pocket-size-container">
+            <input type="range" id="pocket-size" min="20" max="480" value="50" oninput="updatePocketSize(this.value)">
+            <label for="pocket-size">Размер кармана:</label>
+        </div>
+        <div class="button-container">
+            <div class="color-picker">
+                <input type="color" id="color-picker" value="#cccccc">
+            </div>
+            <div class="add-pocket-container">
+                <button class="add-pocket-button" onclick="openModal()"><i class="fas fa-plus"></i> Добавить карман</button>
+            </div>
+            <div class="materials-container">
+                <button class="add-pocket-button" onclick="openMaterialsModal()"><i class="fas fa-cogs"></i> Материалы</button>
+            </div>
+            <div class="styles-container">
+                <button class="add-pocket-button" onclick="openStylesModal()"><i class="fas fa-tshirt"></i> Фасоны</button>
+            </div>
+            <div class="aprons-container">
+                <button class="add-pocket-button" onclick="openApronsModal()"><i class="fas fa-utensils"></i> Фартуки</button>
+            </div>
+            <div class="try-on-container">
+                <button class="add-pocket-button" onclick="openTryOnModal()"><i class="fas fa-eye"></i> Примерить</button>
+            </div>
+            <div class="gallery-container">
+                <button class="add-pocket-button" onclick="openGalleryModal()"><i class="fas fa-images"></i> Галерея</button>
+            </div>
+            <div class="save-button-container">
+                <button class="add-pocket-button" onclick="saveAsJPEG()"><i class="fas fa-save"></i> Сохранить как JPEG</button>
+            </div>
+            <div class="fill-button-container">
+                <button class="fill-button" onclick="enableFill()"><i class="fas fa-fill-drip"></i> Заливка</button>
+            </div>
+            <div class="logo-upload-container">
+                <input type="file" id="logo-upload" accept="image/*" onchange="uploadLogo(event)">
+                <label for="logo-upload"><i class="fas fa-upload"></i> Загрузить логотип</label>
+            </div>
+            <div class="add-text-container">
+                <button class="add-pocket-button" onclick="openTextModal()"><i class="fas fa-font"></i> Добавить текст</button>
+            </div>
+            <div class="undo-container">
+                <button class="add-pocket-button" onclick="undo()"><i class="fas fa-undo"></i> Отменить</button>
+            </div>
+            <div class="redo-container">
+                <button class="add-pocket-button" onclick="redo()"><i class="fas fa-redo"></i> Повторить</button>
+            </div>
+            <div class="reset-container">
+                <button class="add-pocket-button" onclick="resetDesign()"><i class="fas fa-undo"></i> Сбросить</button>
+            </div>
+            <div class="order-container">
+                <button class="add-pocket-button" onclick="placeOrder()"><i class="fas fa-shopping-cart"></i> Оформить заказ</button>
+            </div>
+        </div>
+        <div class="mannequin-container">
+            <div class="mannequin" id="mannequin">
+                <canvas id="mannequinCanvas" width="800" height="1000"></canvas>
+            </div>
+        </div>
+        <div class="calculation-container">
+            <div id="total-price">Сумма: 0 сум</div>
+        </div>
+        <div id="receipt">
+            <h3>Чек:</h3>
+        </div>
+    </div>
+
+    <!-- Модальное окно с дизайнами карманов -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div class="design-item">
+                <img src="/img/40985877_1920.png" alt="Дизайн кармана 1" class="design-img" data-img-src="/img/40985877_1920.png" data-pocket-name="Карман 1" data-price="10000" onclick="addPocket(this)">
+                <div class="pocket-name">Накладной</div>
+                <div class="pocket-price">10 000 сум</div>
+            </div>
+            <div class="design-item">
+                <img src="/img/40985876_1920.png" alt="Дизайн кармана 2" class="design-img" data-img-src="/img/40985876_1920.png" data-pocket-name="Карман 2" data-price="15000" onclick="addPocket(this)">
+                <div class="пocket-name">Стандарт</div>
+                <div class="пocket-price">15 000 сум</div>
+            </div>
+            <div class="design-item">
+                <img src="/img/40982263_1920.png" alt="Дизайн кармана 3" class="design-img" data-img-src="/img/40982263_1920.png" data-pocket-name="Карман 3" data-price="20000" onclick="addPocket(this)">
+                <div class="пocket-name">Карман 3</div>
+                <div class="пocket-price">20 000 сум</div>
+            </div>
+            <div class="design-item">
+                <img src="/img/41373654_1920.png" alt="Дизайн кармана 3" class="design-img" data-img-src="/img/41373654_1920.png" data-pocket-name="Карман N1" data-price="20000" onclick="addPocket(this)">
+                <div class="пocket-name">Карман N1</div>
+                <div class="пocket-price">20 000 сум</div>
+            </div>
+            <div class="design-item">
+                <img src="/img/41373655_1920.png" alt="Дизайн кармана 3" class="design-img" data-img-src="/img/41373655_1920.png" data-pocket-name="Карман N2" data-price="20000" onclick="addPocket(this)">
+                <div class="пocket-name">Карман N2</div>
+                <div class="пocket-price">20 000 сум</div>
+            </div>
+            <div class="design-item">
+                <img src="/img/41373837_1920.png" alt="Дизайн кармана 3" class="design-img" data-img-src="/img/41373837_1920.png" data-pocket-name="Карман N3" data-price="20000" onclick="addPocket(this)">
+                <div class="пocket-name">Карман N3</div>
+                <div class="пocket-price">20 000 сум</div>
+            </div>
+            <div class="design-item">
+                <img src="/img/41373836_1920.png" alt="Дизайн кармана 3" class="design-img" data-img-src="/img/41373836_1920.png" data-pocket-name="Карман N4" data-price="20000" onclick="addPocket(this)">
+                <div class="пocket-name">Карман N4</div>
+                <div class="пocket-price">20 000 сум</div>
+            </div>
+            <div class="design-item">
+                <img src="/img/41461878_1920.png" alt="Дизайн кармана 3" class="design-img" data-img-src="/img/41461878_1920.png" data-pocket-name="Карман 3" data-price="20000" onclick="addPocket(this)">
+                <div class="пocket-name">Карман N5</div>
+                <div class="пocket-price">20 000 сум</div>
+            </div>
+            <div class="design-item">
+                <img src="/img/41461879_1920.png" alt="Дизайн кармана 3" class="design-img" data-img-src="/img/41461879_1920.png" data-pocket-name="Карман 3" data-price="20000" onclick="addPocket(this)">
+                <div class="пocket-name">Карман N6</div>
+                <div class="пocket-price">20 000 сум</div>
+            </div>
+            <div class="design-item">
+                <img src="/img/41461880_1920.png" alt="Дизайн кармана 3" class="design-img" data-img-src="/img/41461880_1920.png" data-pocket-name="Карман 3" data-price="20000" onclick="addPocket(this)">
+                <div class="пocket-name">Карман N7</div>
+                <div class="пocket-price">20 000 сум</div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Модальное окно с материалами -->
+    <div id="materialsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeMaterialsModal()">&times;</span>
+            <h2>Материалы</h2>
+            <div>
+                <label><input type="checkbox" value="Хебе" onchange="toggleMaterial(this, 'Хебе', 200000)"> Х/Б (+200 000 сум)</label><br>
+                <label><input type="checkbox" value="Диогонал" onchange="toggleMaterial(this, 'Диогонал', 220000)"> Диогонал (+220 000 сум)</label><br>
+                <label><input type="checkbox" value="Миллий Гвардия" onchange="toggleMaterial(this, 'Миллий Гвардия', 250000)"> Миллий Гвардия (+250 000 сум)</label><br>
+                <label><input type="checkbox" value="Габардин" onchange="toggleMaterial(this, 'Габардин', 100000)"> Габардин (+100 000 сум)</label><br>
+                <label><input type="checkbox" value="Бухарский" onchange="toggleMaterial(this, 'Бухарский', 150000)"> Бухарский (+150 000 сум)</label><br>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно с фасонами -->
+    <div id="stylesModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeStylesModal()">&times;</span>
+            <h2>Фасоны</h2>
+            <div>
+                <button onclick="changeStyle('img/povar.png')">Комбинезон</button>
+                <button onclick="changeStyle('/img/41255839_1920.png')">POLO Футболка</button>
+                <button onclick="changeStyle('img/povar.png')">Поварская спец одежда</button>
+                <button onclick="changeStyle('/img/41355270_1920.png')">Поварская одежда 2 </button>
+                <button onclick="changeStyle('/img/41355345_1920.png')">Футболка</button>
+                <button onclick="changeStyle('/img/41374329_1920.png')">Фартук</button>
+                <button onclick="changeStyle('/img/41374329_1920.png')">Фартук 2</button>
+                <button onclick="changeStyle('/img/41374329_1920.png')">Китель спецодежда</button>
+                <button onclick="changeStyle('/img/41374329_1920.png')">спецодежда зад перед</button>
+                <button onclick="changeStyle('/img/41374329_1920.png')">Плварской зад перед</button>
+                <button onclick="changeStyle('/img/41374329_1920.png')">Китель</button>
+                <button onclick="changeStyle('/img/41374329_1920.png')">Китель</button>
+                <button onclick="changeStyle('/img/41374329_1920.png')">Китель</button>
+                <button onclick="changeStyle('/img/41374329_1920.png')">Китель</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно с фартуками -->
+    <div id="apronsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeApronsModal()">&times;</span>
+            <h2>Фасоны фартуков</h2>
+            <div>
+                <button onclick="changeApron('img/povar.png')">Фартук 1</button>
+                <button onclick="changeApron('/img/apron2.png')">Фартук 2</button>
+                <button onclick="changeApron('/img/apron3.png')">Фартук 3</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для примерки -->
+    <div id="tryOnModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeTryOnModal()">&times;</span>
+            <h2>Примерка</h2>
+            <div class="try-on-content">
+                <img id="tryOnImage" src="/img/41255938_1920.png" alt="Примерка" style="width:100%;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для галереи -->
+    <div id="galleryModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeGalleryModal()">&times;</span>
+            <h2>Галерея</h2>
+            <div class="gallery-content">
+                <img src="/img/design1.png" alt="Дизайн 1" style="width:100px; margin: 10px;">
+                <img src="/img/design2.png" alt="Дизайн 2" style="width:100px; margin: 10px;">
+                <img src="/img/design3.png" alt="Дизайн 3" style="width:100px; margin: 10px;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно для настройки текста -->
+    <div id="textModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeTextModal()">&times;</span>
+            <h2>Добавить текст</h2>
+            <form id="textForm" onsubmit="submitText(event)">
+                <label for="text-input">Текст:</label><br>
+                <input type="text" id="text-input" name="text" required><br><br>
+                <label for="font-select">Шрифт:</label><br>
+                <select id="font-select" name="font">
+                    <option value="Arial">Arial</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Courier New">Courier New</option>
+                    <option value="Roboto">Roboto</option>
+                    <option value="Open Sans">Open Sans</option>
+                    <option value="Lato">Lato</option>
+                    <option value="Montserrat">Montserrat</option>
+                    <option value="Oswald">Oswald</option>
+                    <option value="Raleway">Raleway</option>
+                </select><br><br>
+                <label for="color-input">Цвет:</label><br>
+                <input type="color" id="color-input" name="color" value="#000000"><br><br>
+                <label for="size-input">Размер:</label><br>
+                <input type="number" id="size-input" name="size" value="24"><br><br>
+                <label for="letter-spacing-input">Интервал между буквами:</label><br>
+                <input type="number" id="letter-spacing-input" name="letterSpacing" value="0"><br><br>
+                <label for="line-height-input">Высота строки:</label><br>
+                <input type="number" id="line-height-input" name="lineHeight" value="1.2"><br><br>
+                <label for="font-style-select">Стиль текста:</label><br>
+                <select id="font-style-select" name="fontStyle">
+                    <option value="normal">Обычный</option>
+                    <option value="italic">Курсив</option>
+                    <option value="bold">Жирный</option>
+                    <option value="underline">Подчеркнутый</option>
+                </select><br><br>
+                <button type="submit" class="add-pocket-button"><i class="fas fa-check"></i> Добавить</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для сохранения -->
+    <div id="saveModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSaveModal()">&times;</span>
+            <h2>Спасибо что выбрали нас!</h2>
+        </div>
+    </div>
+
+    <!-- Модальное окно для оформления заказа -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeOrderModal()">&times;</span>
+            <h2>Оформление заказа</h2>
+            <form id="orderForm" onsubmit="submitOrder(event)">
+                <label for="name">Имя:</label><br>
+                <input type="text" id="name" name="name" required><br><br>
+                <label for="size">Размер:</label><br>
+                <input type="text" id="size" name="size" required><br><br>
+                <label for="quantity">Количество:</label><br>
+                <input type="number" id="quantity" name="quantity" required><br><br>
+                <label for="notes">Примечания:</label><br>
+                <textarea id="notes" name="notes"></textarea><br><br>
+                <button type="submit" class="add-pocket-button"><i class="fas fa-check"></i> Подтвердить</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+const mannequinCanvas = document.getElementById('mannequinCanvas');
+const ctx = mannequinCanvas.getContext('2d');
+const colorPicker = document.getElementById('color-picker');
+let fillEnabled = false;
+let totalPrice = 0;
+let currentRotation = 0;
+let isDragging = false;
+let startX;
+
+const image = new Image();
+image.src = '/img/41255938_1920.png';
+image.onload = () => {
+    ctx.drawImage(image, 0, 0, mannequinCanvas.width, mannequinCanvas.height);
+};
+
+function openModal() {
+    document.getElementById('modal').style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+}
+
+function openMaterialsModal() {
+    document.getElementById('materialsModal').style.display = 'block';
+}
+
+function closeMaterialsModal() {
+    document.getElementById('materialsModal').style.display = 'none';
+}
+
+function openStylesModal() {
+    document.getElementById('stylesModal').style.display = 'block';
+}
+
+function closeStylesModal() {
+    document.getElementById('stylesModal').style.display = 'none';
+}
+
+function openApronsModal() {
+    document.getElementById('apronsModal').style.display = 'block';
+}
+
+function closeApronsModal() {
+    document.getElementById('apronsModal').style.display = 'none';
+}
+
+function openTryOnModal() {
+    document.getElementById('tryOnModal').style.display = 'block';
+}
+
+function closeTryOnModal() {
+    document.getElementById('tryOnModal').style.display = 'none';
+}
+
+function openGalleryModal() {
+    document.getElementById('galleryModal').style.display = 'block';
+}
+
+function closeGalleryModal() {
+    document.getElementById('galleryModal').style.display = 'none';
+}
+
+function openTextModal() {
+    document.getElementById('textModal').style.display = 'block';
+}
+
+function closeTextModal() {
+    document.getElementById('textModal').style.display = 'none';
+}
+
+function openSaveModal() {
+    document.getElementById('saveModal').style.display = 'block';
+}
+
+function closeSaveModal() {
+    document.getElementById('saveModal').style.display = 'none';
+}
+
+function openOrderModal() {
+    document.getElementById('orderModal').style.display = 'block';
+}
+
+function closeOrderModal() {
+    document.getElementById('orderModal').style.display = 'none';
+}
+
+function enableFill() {
+    fillEnabled = true;
+    mannequinCanvas.style.cursor = 'crosshair';
+    showTooltip('click-to-fill', 'Щелкните, чтобы залить цветом', 'top', mannequinCanvas);
+}
+
+function disableFill() {
+    fillEnabled = false;
+    mannequinCanvas.style.cursor = 'default';
+}
+
+function floodFill(x, y, fillColor) {
+    const canvasWidth = mannequinCanvas.width;
+    const canvasHeight = mannequinCanvas.height;
+    const imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+    const data = imageData.data;
+    const targetColor = getColorAtPixel(data, x, y, canvasWidth);
+    const fillStack = [[x, y]];
+
+    while (fillStack.length) {
+        const [currentX, currentY] = fillStack.pop();
+        const pixelIndex = (currentY * canvasWidth + currentX) * 4;
+
+        if (colorsMatch(data, pixelIndex, targetColor)) {
+            setPixelColor(data, pixelIndex, fillColor);
+
+            fillStack.push([currentX + 1, currentY]);
+            fillStack.push([currentX - 1, currentY]);
+            fillStack.push([currentX, currentY + 1]);
+            fillStack.push([currentX, currentY - 1]);
+        }
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+}
+
+function getColorAtPixel(data, x, y, width) {
+    const pixelIndex = (y * width + x) * 4;
+    return [data[pixelIndex], data[pixelIndex + 1], data[pixelIndex + 2], data[pixelIndex + 3]];
+}
+
+function setPixelColor(data, index, color) {
+    data[index] = color[0];
+    data[index + 1] = color[1];
+    data[index + 2] = color[2];
+    data[index + 3] = color[3];
+}
+
+function colorsMatch(data, index, color) {
+    return data[index] === color[0] &&
+           data[index + 1] === color[1] &&
+           data[index + 2] === color[2] &&
+           data[index + 3] === color[3];
+}
+
+function floodFillPocket(pocket, x, y, fillColor) {
+    const canvas = document.createElement('canvas');
+    canvas.width = pocket.clientWidth;
+    canvas.height = pocket.clientHeight;
+    const ctx = canvas.getContext('2d');
+
+    const img = pocket.querySelector('img');
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    const targetColor = getColorAtPixel(data, x, y, canvas.width);
+    const fillStack = [[x, y]];
+
+    while (fillStack.length) {
+        const [currentX, currentY] = fillStack.pop();
+        const pixelIndex = (currentY * canvas.width + currentX) * 4;
+
+        if (colorsMatch(data, pixelIndex, targetColor)) {
+            setPixelColor(data, pixelIndex, fillColor);
+
+            fillStack.push([currentX + 1, currentY]);
+            fillStack.push([currentX - 1, currentY]);
+            fillStack.push([currentX, currentY + 1]);
+            fillStack.push([currentX, currentY - 1]);
+        }
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+    img.src = canvas.toDataURL();
+}
+
+function addPocket(element) {
+    const imgSrc = element.getAttribute('data-img-src');
+    const pocketName = element.getAttribute('data-pocket-name');
+    const price = parseInt(element.getAttribute('data-price'));
+
+    const pocket = document.createElement('div');
+    pocket.classList.add('pocket');
+    pocket.style.width = `${document.getElementById('pocket-size').value}px`;
+    pocket.style.height = `${document.getElementById('pocket-size').value}px`;
+
+    const img = document.createElement('img');
+    img.src = imgSrc;
+    img.style.width = '100%';
+    pocket.appendChild(img);
+
+    const deleteButton = document.createElement('div');
+    deleteButton.textContent = '×';
+    deleteButton.classList.add('delete-pocket');
+    deleteButton.onclick = function() {
+        removePocket(pocket, pocketName, price);
+    };
+    pocket.appendChild(deleteButton);
+
+    pocket.style.left = '50%';
+    pocket.style.top = '50%';
+    pocket.style.transform = 'translate(-50%, -50%)';
+    pocket.onmousedown = startDrag;
+
+    pocket.addEventListener('click', (event) => {
+        if (fillEnabled) {
+            event.stopPropagation();
+            const rect = pocket.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            const fillColor = hexToRgb(colorPicker.value);
+            floodFillPocket(pocket, Math.floor(x), Math.floor(y), fillColor);
+            disableFill();
+        }
+    });
+
+    document.getElementById('mannequin').appendChild(pocket);
+
+    totalPrice += price;
+    updateReceipt(pocketName, price);
+    updateTotalPrice();
+
+    closeModal();
+}
+
+mannequinCanvas.addEventListener('click', (event) => {
+    if (fillEnabled && event.target === mannequinCanvas) {
+        const rect = mannequinCanvas.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const y = event.clientY - rect.top;
+        const fillColor = hexToRgb(colorPicker.value);
+
+        floodFill(Math.floor(x), Math.floor(y), fillColor);
+        disableFill();
+    }
+});
+
+function hexToRgb(hex) {
+    const bigint = parseInt(hex.slice(1), 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+    return [r, g, b, 255];
+}
+
+function startDrag(event) {
+    draggedPocket = event.target.closest('.pocket');
+    offsetX = event.clientX - draggedPocket.getBoundingClientRect().left;
+    offsetY = event.clientY - draggedPocket.getBoundingClientRect().top;
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+}
+
+function onMouseMove(event) {
+    if (draggedPocket) {
+        const newLeft = event.clientX - offsetX;
+        const newTop = event.clientY - offsetY;
+        draggedPocket.style.left = `${newLeft}px`;
+        draggedPocket.style.top = `${newTop}px`;
+    }
+}
+
+function onMouseUp() {
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+    draggedPocket = null;
+}
+
+function updatePocketSize(size) {
+    const pockets = document.querySelectorAll('.pocket');
+    pockets.forEach(pocket => {
+        pocket.style.width = `${size}px`;
+        pocket.style.height = `${size}px`;
+    });
+}
+
+function updateReceipt(name, price) {
+    const item = document.createElement('div');
+    item.textContent = `${name}: ${price} сум`;
+    item.setAttribute('data-pocket-name', name);
+    item.setAttribute('data-price', price);
+    document.getElementById('receipt').appendChild(item);
+}
+
+function updateTotalPrice() {
+    document.getElementById('total-price').textContent = `Сумма: ${totalPrice} сум`;
+}
+
+function toggleMaterial(element, materialName, price) {
+    if (element.checked) {
+        totalPrice += price;
+        const item = document.createElement('div');
+        item.textContent = `${materialName}: ${price} сум`;
+        item.setAttribute('data-material-name', materialName);
+        item.setAttribute('data-price', price);
+        document.getElementById('receipt').appendChild(item);
+    } else {
+        totalPrice -= price;
+        const items = Array.from(document.getElementById('receipt').children);
+        const item = items.find(i => i.getAttribute('data-material-name') === materialName);
+        if (item) {
+            item.remove();
+        }
+    }
+    updateTotalPrice();
+}
+
+function changeStyle(styleSrc) {
+    const image = new Image();
+    image.src = styleSrc;
+    image.onload = () => {
+        ctx.clearRect(0, 0, mannequinCanvas.width, mannequinCanvas.height);
+        ctx.drawImage(image, 0, 0, mannequinCanvas.width, mannequinCanvas.height);
+    };
+}
+
+function changeApron(apronSrc) {
+    const image = new Image();
+    image.src = apronSrc;
+    image.onload = () => {
+        ctx.clearRect(0, 0, mannequinCanvas.width, mannequinCanvas.height);
+        ctx.drawImage(image, 0, 0, mannequinCanvas.width, mannequinCanvas.height);
+    };
+}
+
+function removePocket(pocket, pocketName, price) {
+    pocket.remove();
+    totalPrice -= price;
+
+    const items = Array.from(document.getElementById('receipt').children);
+    const item = items.find(i => i.getAttribute('data-pocket-name') === pocketName && parseInt(i.getAttribute('data-price')) === price);
+    if (item) {
+        item.remove();
+    }
+
+    updateTotalPrice();
+}
+
+function saveAsJPEG() {
+    const link = document.createElement('a');
+    link.href = mannequinCanvas.toDataURL('image/jpeg');
+    link.download = 'project.jpeg';
+    link.click();
+}
+
+function uploadLogo(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.src = e.target.result;
+            img.onload = function() {
+                const logo = document.createElement('div');
+                logo.classList.add('pocket');
+                logo.style.width = '100px';
+                logo.style.height = '100px';
+
+                const logoImg = document.createElement('img');
+                logoImg.src = img.src;
+                logoImg.style.width = '100%';
+                logo.appendChild(logoImg);
+
+                const deleteButton = document.createElement('div');
+                deleteButton.textContent = '×';
+                deleteButton.classList.add('delete-pocket');
+                deleteButton.onclick = function() {
+                    logo.remove();
+                };
+                logo.appendChild(deleteButton);
+
+                logo.style.left = '50%';
+                logo.style.top = '50%';
+                logo.style.transform = 'translate(-50%, -50%)';
+                logo.onmousedown = startDrag;
+
+                document.getElementById('mannequin').appendChild(logo);
+            }
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
+function openTextModal() {
+    document.getElementById('textModal').style.display = 'block';
+}
+
+function closeTextModal() {
+    document.getElementById('textModal').style.display = 'none';
+}
+
+function submitText(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const text = formData.get('text');
+    const font = formData.get('font');
+    const color = formData.get('color');
+    const size = formData.get('size');
+    const letterSpacing = formData.get('letterSpacing');
+    const lineHeight = formData.get('lineHeight');
+    const fontStyle = formData.get('fontStyle');
+
+    if (text) {
+        const textElement = document.createElement('div');
+        textElement.classList.add('pocket');
+        textElement.style.width = 'auto';
+        textElement.style.height = 'auto';
+        textElement.style.color = color;
+        textElement.style.backgroundColor = 'transparent';
+        textElement.style.fontSize = `${size}px`;
+        textElement.style.fontFamily = font;
+        textElement.style.letterSpacing = `${letterSpacing}px`;
+        textElement.style.lineHeight = `${lineHeight}`;
+        textElement.style.fontStyle = fontStyle.includes('italic') ? 'italic' : 'normal';
+        textElement.style.fontWeight = fontStyle.includes('bold') ? 'bold' : 'normal';
+        if (fontStyle.includes('underline')) {
+            textElement.style.textDecoration = 'underline';
+        }
+        textElement.style.padding = '5px';
+        textElement.textContent = text;
+
+        const deleteButton = document.createElement('div');
+        deleteButton.textContent = '×';
+        deleteButton.classList.add('delete-pocket');
+        deleteButton.onclick = function() {
+            textElement.remove();
+        };
+        textElement.appendChild(deleteButton);
+
+        textElement.style.left = '50%';
+        textElement.style.top = '50%';
+        textElement.style.transform = 'translate(-50%, -50%)';
+        textElement.onmousedown = startDrag;
+
+        document.getElementById('mannequin').appendChild(textElement);
+    }
+
+    closeTextModal();
+}
+
+let undoStack = [];
+let redoStack = [];
+
+function saveState() {
+    const state = {
+        pockets: Array.from(document.querySelectorAll('.pocket')).map(pocket => ({
+            html: pocket.outerHTML,
+            left: pocket.style.left,
+            top: pocket.style.top
+        })),
+        totalPrice: totalPrice,
+        receipt: document.getElementById('receipt').innerHTML
+    };
+    undoStack.push(state);
+    redoStack = [];
+}
+
+function loadState(state) {
+    resetDesign();
+    document.getElementById('receipt').innerHTML = state.receipt;
+    state.pockets.forEach(pocketData => {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = pocketData.html;
+        const pocket = tempDiv.firstChild;
+        pocket.style.left = pocketData.left;
+        pocket.style.top = pocketData.top;
+        pocket.onmousedown = startDrag;
+        document.getElementById('mannequin').appendChild(pocket);
+    });
+    totalPrice = state.totalPrice;
+    updateTotalPrice();
+}
+
+function undo() {
+    if (undoStack.length > 0) {
+        const currentState = {
+            pockets: Array.from(document.querySelectorAll('.pocket')).map(pocket => ({
+                html: pocket.outerHTML,
+                left: pocket.style.left,
+                top: pocket.style.top
+            })),
+            totalPrice: totalPrice,
+            receipt: document.getElementById('receipt').innerHTML
+        };
+        redoStack.push(currentState);
+        const previousState = undoStack.pop();
+        loadState(previousState);
+    }
+}
+
+function redo() {
+    if (redoStack.length > 0) {
+        const currentState = {
+            pockets: Array.from(document.querySelectorAll('.pocket')). map(pocket => ({
+                html: pocket.outerHTML,
+                left: pocket.style.left,
+                top: pocket.style.top
+            })),
+            totalPrice: totalPrice,
+            receipt: document.getElementById('receipt').innerHTML
+        };
+        undoStack.push(currentState);
+        const nextState = redoStack.pop();
+        loadState(nextState);
+    }
+}
+
+function resetDesign() {
+    ctx.clearRect(0, 0, mannequinCanvas.width, mannequinCanvas.height);
+    ctx.drawImage(image, 0, 0, mannequinCanvas.width, mannequinCanvas.height);
+    document.querySelectorAll('.pocket').forEach(pocket => pocket.remove());
+    totalPrice = 0;
+    updateTotalPrice();
+    document.getElementById('receipt').innerHTML = '<h3>Чек:</h3>';
+}
+
+function placeOrder() {
+    openOrderModal();
+}
+
+function submitOrder(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const name = formData.get('name');
+    const size = formData.get('size');
+    const quantity = formData.get('quantity');
+    const notes = formData.get('notes');
+
+    ctx.font = '20px Arial';
+    ctx.fillStyle = 'black';
+    ctx.fillText(`Имя: ${name}`, 10, 990);
+    ctx.fillText(`Размер: ${size}`, 10, 1010);
+    ctx.fillText(`Количество: ${quantity}`, 10, 1030);
+    ctx.fillText(`Примечания: ${notes}`, 10, 1050);
+
+    saveAsJPEG();
+
+    ctx.clearRect(0, 990, 800, 60);
+
+    closeOrderModal();
+}
+
+mannequinCanvas.addEventListener('mousedown', (event) => {
+    if (event.target === mannequinCanvas) {
+        isDragging = true;
+        startX = event.clientX;
+    }
+});
+
+document.addEventListener('mousemove', (event) => {
+    if (isDragging) {
+        const dx = event.clientX - startX;
+        currentRotation = (currentRotation + dx / 5) % 360;
+        mannequinCanvas.style.transform = `rotateY(${currentRotation}deg)`;
+        startX = event.clientX;
+    }
+});
+
+document.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+
+function showTooltip(id, text, position, target) {
+    let tooltip = document.getElementById(id);
+    if (!tooltip) {
+        tooltip = document.createElement('div');
+        tooltip.id = id;
+        tooltip.className = 'tooltip tooltip-' + position;
+        tooltip.textContent = text;
+        document.body.appendChild(tooltip);
+    }
+
+    const rect = target.getBoundingClientRect();
+    tooltip.style.display = 'block';
+
+    if (position === 'top') {
+        tooltip.style.left = rect.left + window.scrollX + (rect.width - tooltip.offsetWidth) / 2 + 'px';
+        tooltip.style.top = rect.top + window.scrollY - tooltip.offsetHeight - 10 + 'px';
+    } else if (position === 'right') {
+        tooltip.style.left = rect.right + window.scrollX + 10 + 'px';
+        tooltip.style.top = rect.top + window.scrollY + (rect.height - tooltip.offsetHeight) / 2 + 'px';
+    }
+}
+
+function hideTooltip(id) {
+    const tooltip = document.getElementById(id);
+    if (tooltip) {
+        tooltip.style.display = 'none';
+    }
+}
+
+showTooltip('add-pocket-tip', 'Нажмите, чтобы добавить карман', 'right', document.querySelector('.add-pocket-container'));
+setTimeout(() => hideTooltip('add-pocket-tip'), 5000);
+    </script>
+
+    <script>
+        function openOrderForm() {
+            const formHtml = `
+                <div id="orderForm">
+                    <label for="name">Имя:</label>
+                    <input type="text" id="name"><br>
+                    <label for="phone">Номер телефона:</label>
+                    <input type="text" id="phone"><br>
+                    <label for="note">Примечание:</label>
+                    <textarea id="note"></textarea><br>
+                    <label for="deposit">Залог:</label>
+                    <input type="text" id="deposit"><br>
+                    <label for="total">Общая сумма:</label>
+                    <input type="text" id="total"><br>
+                    <label for="deadline">Срок выполнения:</label>
+                    <input type="date" id="deadline"><br>
+                    <button onclick="submitOrderForm()">Оформить заказ</button>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', formHtml);
+        }
+
+        function sendOrderToDashboard(orderData) {
+            if (window.opener) {
+                console.log("Sending order data:", orderData);
+                window.opener.postMessage({
+                    type: 'new-order',
+                    order: orderData
+                }, '*');
+            } else {
+                console.error("No opener window found to send order data.");
+            }
+        }
+
+        function submitOrderForm() {
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const note = document.getElementById('note').value;
+            const deposit = document.getElementById('deposit').value;
+            const total = document.getElementById('total').value;
+            const deadline = document.getElementById('deadline').value;
+            
+            const orderData = {
+                name,
+                phone,
+                note,
+                deposit,
+                total,
+                deadline
+            };
+
+            sendOrderToDashboard(orderData);
+            alert("Заказ отправлен!");
+            document.getElementById('orderForm').remove();
+        }
+    </script>
+    <button onclick="openOrderForm()">Отправить заказ</button>
+    </body>
+    
+</html>

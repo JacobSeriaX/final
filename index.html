@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Добавление карманов на спецодежду</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Добавляем jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <header class="header">
+        <img src="img/azdilteks.png" alt="Логотип" class="logo">
+        <h1>Дизайн спецодежды</h1>
+        <p>Создайте уникальный дизайн для вашей спецодежды, добавляя карманы, материалы и фасоны.</p>
+    </header>
+    <main class="main-container">
+        <!-- Левая панель с кнопками -->
+        <aside class="sidebar left-sidebar">
+            <div class="button-container">
+                <div class="color-picker">
+                    <label for="color-picker"><i class="fas fa-palette"></i> Цвет кармана:</label>
+                    <input type="color" id="color-picker" value="#cccccc">
+                </div>
+                <div class="add-pocket-container">
+                    <button class="add-pocket-button" onclick="openModal()"><i class="fas fa-plus"></i> Добавить карман</button>
+                </div>
+                <div class="materials-container">
+                    <button class="add-pocket-button" onclick="openMaterialsModal()"><i class="fas fa-cogs"></i> Материалы</button>
+                </div>
+                <div class="styles-container">
+                    <button class="add-pocket-button" onclick="openStylesModal()"><i class="fas fa-tshirt"></i> Фасоны</button>
+                </div>
+                <div class="aprons-container">
+                    <button class="add-pocket-button" onclick="openApronsModal()"><i class="fas fa-utensils"></i> Фартуки</button>
+                </div>
+                <div class="try-on-container">
+                    <button class="add-pocket-button" onclick="openTryOnModal()"><i class="fas fa-eye"></i> Примерить</button>
+                </div>
+                <div class="gallery-container">
+                    <button class="add-pocket-button" onclick="openGalleryModal()"><i class="fas fa-images"></i> Галерея</button>
+                </div>
+                <div class="save-button-container">
+                    <button class="add-pocket-button" onclick="saveAsJPEG()"><i class="fas fa-save"></i> Сохранить как JPEG</button>
+                </div>
+                <div class="generate-pdf-container">
+                    <button class="add-pocket-button generate-pdf-button" onclick="generatePDF()"><i class="fas fa-file-pdf"></i> Сгенерировать PDF</button>
+                </div>
+                <div class="fill-button-container">
+                    <button class="fill-button" onclick="enableFill()"><i class="fas fa-fill-drip"></i> Заливка</button>
+                </div>
+                <div class="logo-upload-container">
+                    <input type="file" id="logo-upload" accept="image/*" onchange="uploadLogo(event)">
+                    <label for="logo-upload"><i class="fas fa-upload"></i> Загрузить логотип</label>
+                </div>
+                <div class="add-text-container">
+                    <button class="add-pocket-button" onclick="openTextModal()"><i class="fas fa-font"></i> Добавить текст</button>
+                </div>
+                <div class="undo-container">
+                    <button class="add-pocket-button" onclick="undo()"><i class="fas fa-undo"></i> Отменить</button>
+                </div>
+                <div class="redo-container">
+                    <button class="add-pocket-button" onclick="redo()"><i class="fas fa-redo"></i> Повторить</button>
+                </div>
+                <div class="reset-container">
+                    <button class="add-pocket-button" onclick="resetDesign()"><i class="fas fa-undo"></i> Сбросить</button>
+                </div>
+                <div class="order-container">
+                    <button class="add-pocket-button" onclick="placeOrder()"><i class="fas fa-shopping-cart"></i> Оформить заказ</button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Центральная рабочая область -->
+        <section class="work-area">
+            <div id="pocket-size-container">
+                <label for="pocket-size">Размер кармана:</label>
+                <input type="range" id="pocket-size" min="20" max="480" value="50" oninput="updatePocketSize(this.value)">
+            </div>
+            <div class="mannequin-container">
+                <div class="mannequin" id="mannequin">
+                    <canvas id="mannequinCanvas" width="800" height="1000"></canvas>
+                </div>
+            </div>
+            <div class="calculation-container">
+                <div id="total-price">Сумма: 0 сум</div>
+            </div>
+            <div id="receipt">
+                <h3>Чек:</h3>
+            </div>
+        </section>
+
+        <!-- Правая панель с фасонами -->
+        <aside class="sidebar right-sidebar">
+            <h2>Фасоны</h2>
+            <div class="styles-list">
+                <button onclick="changeStyle('img/povar.png')">Комбинезон</button>
+                <button onclick="changeStyle('img/41255839_1920.png')">POLO Футболка</button>
+                <button onclick="changeStyle('img/povar.png')">Поварская спец одежда</button>
+                <button onclick="changeStyle('img/41355270_1920.png')">Поварская одежда 2</button>
+                <button onclick="changeStyle('img/41355345_1920.png')">Футболка</button>
+                <button onclick="changeStyle('img/41374329_1920.png')">Фартук</button>
+                <button onclick="changeStyle('img/41374329_1920.png')">Фартук 2</button>
+                <button onclick="changeStyle('img/41374329_1920.png')">Китель спецодежда</button>
+                <button onclick="changeStyle('img/41374329_1920.png')">Спецодежда зад перед</button>
+                <button onclick="changeStyle('img/41374329_1920.png')">Поварской зад перед</button>
+                <button onclick="changeStyle('img/41374329_1920.png')">Китель</button>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Модальные окна -->
+    <!-- Карманы -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Выберите карман</h2>
+            <div class="design-grid">
+                <!-- Пример карманов -->
+                <div class="design-item">
+                    <img src="img/40985877_1920.png" alt="Дизайн кармана 1" class="design-img" data-img-src="img/40985877_1920.png" data-pocket-name="Накладной" data-price="10000" onclick="addPocket(this)">
+                    <div class="pocket-name">Накладной</div>
+                    <div class="pocket-price">10 000 сум</div>
+                </div>
+                <div class="design-item">
+                    <img src="img/polo.png" alt="Дизайн кармана 2" class="design-img" data-img-src="img/polo.png" data-pocket-name="Карманы с клапанами" data-price="150000" onclick="addPocket(this)">
+                    <div class="pocket-name">Карманы с клапанами</div>
+                    <div class="pocket-price">150 000 сум</div>
+                </div>
+                <!-- Добавьте остальные карманы аналогично -->
+                <!-- ... -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Материалы -->
+    <div id="materialsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeMaterialsModal()">&times;</span>
+            <h2>Материалы</h2>
+            <div class="materials-list">
+                <label><input type="checkbox" value="Х/Б" onchange="toggleMaterial(this, 'Х/Б', 200000)"> Х/Б (+200 000 сум)</label><br>
+                <label><input type="checkbox" value="Диогонал" onchange="toggleMaterial(this, 'Диогонал', 220000)"> Диогонал (+220 000 сум)</label><br>
+                <label><input type="checkbox" value="Миллий Гвардия" onchange="toggleMaterial(this, 'Миллий Гвардия', 250000)"> Миллий Гвардия (+250 000 сум)</label><br>
+                <label><input type="checkbox" value="Габардин" onchange="toggleMaterial(this, 'Габардин', 100000)"> Габардин (+100 000 сум)</label><br>
+                <label><input type="checkbox" value="Бухарский" onchange="toggleMaterial(this, 'Бухарский', 150000)"> Бухарский (+150 000 сум)</label><br>
+            </div>
+        </div>
+    </div>
+
+    <!-- Фартуки -->
+    <div id="apronsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeApronsModal()">&times;</span>
+            <h2>Фасоны фартуков</h2>
+            <div class="aprons-list">
+                <button onclick="changeApron('img/povar.png')">Фартук 1</button>
+                <button onclick="changeApron('img/apron2.png')">Фартук 2</button>
+                <button onclick="changeApron('img/apron3.png')">Фартук 3</button>
+                <button onclick="changeApron('img/fartuk.png')">Фартук 4</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Примерка -->
+    <div id="tryOnModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeTryOnModal()">&times;</span>
+            <h2>Примерка</h2>
+            <div class="try-on-content">
+                <img id="tryOnImage" src="img/41255938_1920.png" alt="Примерка" class="try-on-image">
+            </div>
+        </div>
+    </div>
+
+    <!-- Галерея -->
+    <div id="galleryModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeGalleryModal()">&times;</span>
+            <h2>Галерея</h2>
+            <div class="gallery-content">
+                <img src="img/design1.png" alt="Дизайн 1" class="gallery-img">
+                <img src="img/design2.png" alt="Дизайн 2" class="gallery-img">
+                <img src="img/design3.png" alt="Дизайн 3" class="gallery-img">
+            </div>
+        </div>
+    </div>
+
+    <!-- Добавление текста -->
+    <div id="textModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeTextModal()">&times;</span>
+            <h2>Добавить текст</h2>
+            <form id="textForm" onsubmit="submitText(event)">
+                <label for="text-input">Текст:</label><br>
+                <input type="text" id="text-input" name="text" required><br><br>
+                <label for="font-select">Шрифт:</label><br>
+                <select id="font-select" name="font">
+                    <option value="Arial">Arial</option>
+                    <option value="Verdana">Verdana</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Courier New">Courier New</option>
+                    <option value="Roboto">Roboto</option>
+                    <option value="Open Sans">Open Sans</option>
+                    <option value="Lato">Lato</option>
+                    <option value="Montserrat">Montserrat</option>
+                    <option value="Oswald">Oswald</option>
+                    <option value="Raleway">Raleway</option>
+                </select><br><br>
+                <label for="color-input">Цвет:</label><br>
+                <input type="color" id="color-input" name="color" value="#000000"><br><br>
+                <label for="size-input">Размер:</label><br>
+                <input type="number" id="size-input" name="size" value="24"><br><br>
+                <label for="letter-spacing-input">Интервал между буквами:</label><br>
+                <input type="number" id="letter-spacing-input" name="letterSpacing" value="0"><br><br>
+                <label for="line-height-input">Высота строки:</label><br>
+                <input type="number" id="line-height-input" name="lineHeight" value="1.2" step="0.1"><br><br>
+                <label for="font-style-select">Стиль текста:</label><br>
+                <select id="font-style-select" name="fontStyle">
+                    <option value="normal">Обычный</option>
+                    <option value="italic">Курсив</option>
+                    <option value="bold">Жирный</option>
+                    <option value="underline">Подчеркнутый</option>
+                </select><br><br>
+                <button type="submit" class="add-pocket-button"><i class="fas fa-check"></i> Добавить</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Сохранение -->
+    <div id="saveModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSaveModal()">&times;</span>
+            <h2>Спасибо, что выбрали нас!</h2>
+        </div>
+    </div>
+
+    <!-- Оформление заказа -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeOrderModal()">&times;</span>
+            <h2>Оформление заказа</h2>
+            <form id="orderForm" onsubmit="submitOrder(event)">
+                <label for="name">Имя:</label><br>
+                <input type="text" id="name" name="name" required><br><br>
+                <label for="size">Размер:</label><br>
+                <input type="text" id="size" name="size" required><br><br>
+                <label for="quantity">Количество:</label><br>
+                <input type="number" id="quantity" name="quantity" required><br><br>
+                <label for="notes">Примечания:</label><br>
+                <textarea id="notes" name="notes"></textarea><br><br>
+                <button type="submit" class="add-pocket-button"><i class="fas fa-check"></i> Подтвердить</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Кнопка для отправки заказа -->
+    <button class="send-order-button" onclick="openOrderForm()">Отправить заказ</button>
+
+    <script src="script.js"></script>
+</body>
+</html>

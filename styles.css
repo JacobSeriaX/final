@@ -1,0 +1,537 @@
+/* Общие стили */
+body {
+    font-family: 'Times New Roman', Times, serif;
+    background-color: #FFFFFF;
+    color: #2c3e50;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+header.header {
+    text-align: center;
+    margin-bottom: 10px;
+    background-color: #FF5733;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 0;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    animation: fadeInDown 1s ease-out;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+header.header img.logo {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 60px;
+}
+
+header.header h1 {
+    font-size: 24px;
+    margin: 0;
+    transition: color 0.3s;
+}
+
+header.header p {
+    font-size: 14px;
+    margin: 5px 0 0 0;
+    transition: color 0.3s;
+}
+
+.main-container {
+    display: flex;
+    height: calc(100vh - 80px); /* Высота экрана минус высота хедера */
+}
+
+/* Левая и правая боковые панели */
+.sidebar {
+    background-color: #f5f5f5;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    border-right: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+}
+
+.left-sidebar {
+    width: 250px;
+}
+
+.right-sidebar {
+    width: 200px;
+    border-left: none; /* Правая панель не имеет левой границы */
+}
+
+.right-sidebar h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #FF5733;
+}
+
+.right-sidebar .styles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.right-sidebar .styles-list button {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.right-sidebar .styles-list button:hover {
+    background-color: #FF5733;
+    color: #fff;
+    transform: scale(1.05);
+}
+
+/* Центральная рабочая область */
+.work-area {
+    flex: 1;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+#pocket-size-container {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#pocket-size-container label {
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+#pocket-size {
+    flex: 1;
+}
+
+.mannequin-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.mannequin {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    position: relative;
+    cursor: grab;
+    transition: transform 0.5s ease, box-shadow 0.3s;
+}
+
+.mannequin:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.mannequin:active {
+    cursor: grabbing;
+}
+
+.pocket {
+    position: absolute;
+    cursor: grab;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.pocket:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.delete-pocket {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: rgba(255, 0, 0, 0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.delete-pocket:hover {
+    background-color: red;
+    transform: rotate(45deg);
+}
+
+.color-picker {
+    margin-bottom: 20px;
+}
+
+.color-picker label {
+    margin-right: 10px;
+    display: block;
+}
+
+.color-picker input[type="color"] {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.color-picker input[type="color"]:hover {
+    transform: scale(1.2);
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+button.add-pocket-button,
+button.fill-button,
+button.send-order-button {
+    background-color: #FF5733;
+    border: 2px solid #FF5733;
+    color: #ffffff;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s;
+    position: relative;
+}
+
+button.add-pocket-button:hover,
+button.fill-button:hover,
+button.send-order-button:hover {
+    background-color: #ffffff;
+    color: #FF5733;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+button.send-order-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 87, 51, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(255, 87, 51, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 87, 51, 0);
+    }
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6);
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background-color: #fffaf0;
+    margin: 5% auto;
+    padding: 20px;
+    border: 2px solid #FF5733;
+    max-width: 800px;
+    border-radius: 8px;
+    position: relative;
+    animation: slideIn 0.5s;
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.modal-content .close {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s, transform 0.3s;
+}
+
+.modal-content .close:hover,
+.modal-content .close:focus {
+    color: black;
+    transform: rotate(90deg);
+}
+
+.design-grid,
+.materials-list,
+.styles-list,
+.aprons-list,
+.gallery-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.design-item,
+.materials-list label,
+.styles-list button,
+.aprons-list button,
+.gallery-img {
+    background-color: #f9f9f9;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.design-item:hover,
+.materials-list label:hover,
+.styles-list button:hover,
+.aprons-list button:hover,
+.gallery-img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.design-img,
+.gallery-img,
+.try-on-image {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+    display: block;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.design-img:hover,
+.gallery-img:hover,
+.try-on-image:hover {
+    transform: scale(1.1);
+}
+
+#receipt {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background-color: #f2f2f2;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 200px;
+    border: 1px solid #FF5733;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+#receipt h3 {
+    margin-top: 0;
+    font-size: 16px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+    color: #2c3e50;
+}
+
+#receipt div {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+/* Стили для правой панели */
+.right-sidebar h2 {
+    margin-top: 0;
+}
+
+.right-sidebar .styles-list button {
+    width: 100%;
+    text-align: left;
+    padding: 8px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.right-sidebar .styles-list button:hover {
+    background-color: #FF5733;
+    color: #fff;
+    transform: scale(1.05);
+}
+
+/* Медиа-запросы для адаптивности */
+@media (max-width: 1200px) {
+    .left-sidebar {
+        width: 200px;
+    }
+
+    .right-sidebar {
+        width: 150px;
+    }
+
+    .mannequin-container {
+        max-width: 600px;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-container {
+        flex-direction: column;
+    }
+
+    .sidebar.left-sidebar,
+    .sidebar.right-sidebar {
+        width: 100%;
+        border: none;
+    }
+
+    .right-sidebar {
+        margin-top: 20px;
+    }
+
+    .work-area {
+        padding: 10px;
+    }
+
+    #receipt {
+        position: relative;
+        top: 10px;
+        right: 0;
+        max-width: 100%;
+    }
+
+    .calculation-container {
+        position: relative;
+        top: 10px;
+        right: 0;
+    }
+
+    .modal-content {
+        width: 90%;
+    }
+
+    .send-order-button {
+        right: 10px;
+        bottom: 10px;
+    }
+}
+
+/* Стили для кнопки генерации PDF */
+.generate-pdf-container {
+    margin-bottom: 20px;
+}
+
+button.add-pocket-button.generate-pdf-button {
+    background-color: #D9534F; /* Красновато для отличия от остальных кнопок */
+    border: 2px solid #D9534F;
+}
+
+button.add-pocket-button.generate-pdf-button:hover {
+    background-color: #ffffff;
+    color: #D9534F;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Дополнительные стили для интерактивности */
+.pocket,
+.logo-upload-container label,
+.add-text-container button,
+.undo-container button,
+.redo-container button,
+.reset-container button,
+.order-container button {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.pocket:active,
+.logo-upload-container label:active,
+.add-text-container button:active,
+.undo-container button:active,
+.redo-container button:active,
+.reset-container button:active,
+.order-container button:active {
+    transform: scale(0.95);
+    box-shadow: none;
+}
+
+#pocket-size-container label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+/* Модальные окна и подсказки остаются без изменений */
+
+/* Обновление чековой позиции */
+#receipt {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+}
+
+/* Обновление манекена для правильного отображения карманов */
+.mannequin {
+    position: relative;
+}
