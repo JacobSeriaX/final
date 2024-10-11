@@ -1,6 +1,3 @@
-// Импортируем необходимые функции из Firebase SDK
-// Поскольку мы используем compat версии через CDN, импорт через ES-модули не требуется
-
 // Firebase конфигурация (данные, предоставленные вами)
 const firebaseConfig = {
     apiKey: "AIzaSyDXGgwXcr-LjqcIbbTUPXo64tx-jzRQX7M",
@@ -14,7 +11,7 @@ const firebaseConfig = {
   
   // Инициализация Firebase
   firebase.initializeApp(firebaseConfig);
-  firebase.analytics();
+  // firebase.analytics(); // Удалено, так как SDK Analytics не подключен
   
   // Получение ссылки на Realtime Database
   const database = firebase.database();
@@ -674,16 +671,6 @@ const firebaseConfig = {
           redoStack = [];
           saveState();
       }
-  }
-  
-  // Функция сброса состояния дизайна без сохранения
-  function resetDesignState() {
-      document.querySelectorAll('.pocket').forEach(pocket => pocket.remove());
-      totalPrice = 0;
-      updateTotalPrice();
-      document.getElementById('receipt').innerHTML = '<h3>Чек:</h3>';
-      undoStack = [];
-      redoStack = [];
   }
   
   // Функция оформления заказа
