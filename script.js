@@ -673,6 +673,16 @@ const firebaseConfig = {
       }
   }
   
+  // Функция сброса состояния дизайна без сохранения
+  function resetDesignState() {
+      document.querySelectorAll('.pocket').forEach(pocket => pocket.remove());
+      totalPrice = 0;
+      updateTotalPrice();
+      document.getElementById('receipt').innerHTML = '<h3>Чек:</h3>';
+      undoStack = [];
+      redoStack = [];
+  }
+  
   // Функция оформления заказа
   function placeOrder() {
       openOrderModal();
