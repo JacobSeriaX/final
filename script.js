@@ -1,4 +1,4 @@
-// Firebase конфигурация (данные, предоставленные вами)
+// Firebase конфигурация (замените "YOUR_API_KEY" на ваш действительный API ключ)
 const firebaseConfig = {
     apiKey: "YOUR_API_KEY", // Замените на ваш действительный API ключ
     authDomain: "final-8cb8b.firebaseapp.com",
@@ -87,7 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Аналогично для других модальных окон
     function openMaterialsModal() {
         const materialsModal = document.getElementById('materialsModal');
         if (materialsModal) {
@@ -893,53 +892,47 @@ document.addEventListener('DOMContentLoaded', () => {
             format: 'a4'
         });
 
-        // Параметры для изображения
-        const imgWidth = 210; // Ширина A4 в мм
-        const imgHeight = (mannequinCanvas.height / mannequinCanvas.width) * imgWidth;
+        // Используем html2canvas для захвата манекена с наложенными элементами
+        const mannequinElement = document.getElementById('mannequin');
 
-        // Создание временного канваса для белого фона
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = mannequinCanvas.width;
-        tempCanvas.height = mannequinCanvas.height;
-        const tempCtx = tempCanvas.getContext('2d');
+        html2canvas(mannequinElement, {backgroundColor: null}).then(canvas => {
+            // Получаем изображение из canvas
+            const imgData = canvas.toDataURL('image/jpeg', 1.0);
 
-        // Заполнение белым фоном
-        tempCtx.fillStyle = '#FFFFFF';
-        tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+            // Параметры для изображения
+            const imgWidth = 210; // Ширина A4 в мм
+            const imgHeight = (canvas.height / canvas.width) * imgWidth;
 
-        // Отрисовка основного канваса на временном канвасе
-        tempCtx.drawImage(mannequinCanvas, 0, 0, tempCanvas.width, tempCanvas.height);
+            // Добавление изображения на первую страницу PDF
+            doc.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
 
-        // Получение изображения в формате JPEG
-        const imgData = tempCanvas.toDataURL('image/jpeg', 1.0);
+            // Добавление второй страницы для чека
+            doc.addPage();
 
-        // Добавление изображения на первую страницу PDF
-        doc.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+            // Добавление заголовка
+            doc.setFontSize(18);
+            doc.text('Чек:', 10, 20);
 
-        // Добавление второй страницы для чека
-        doc.addPage();
+            // Добавление деталей чека
+            doc.setFontSize(12);
+            const receipt = document.getElementById('receipt');
+            if (receipt) {
+                const items = receipt.querySelectorAll('div');
+                let y = 30;
+                items.forEach(item => {
+                    const text = item.textContent;
+                    doc.text(text, 10, y);
+                    y += 10;
+                });
+            } else {
+                console.error('Элемент с id "receipt" не найден.');
+            }
 
-        // Добавление заголовка
-        doc.setFontSize(18);
-        doc.text('Чек:', 10, 20);
-
-        // Добавление деталей чека
-        doc.setFontSize(12);
-        const receipt = document.getElementById('receipt');
-        if (receipt) {
-            const items = receipt.querySelectorAll('div');
-            let y = 30;
-            items.forEach(item => {
-                const text = item.textContent;
-                doc.text(text, 10, y);
-                y += 10;
-            });
-        } else {
-            console.error('Элемент с id "receipt" не найден.');
-        }
-
-        // Сохранение PDF
-        doc.save('order_receipt.pdf');
+            // Сохранение PDF
+            doc.save('order_receipt.pdf');
+        }).catch(error => {
+            console.error('Ошибка при генерации PDF:', error);
+        });
     }
 
     // Функции для подсказок
@@ -985,7 +978,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Начальная подсказка
-    showTooltip('add-pocket-tip', 'Нажмите, чтобы добавить карман', 'right', document.querySelector('.add-pocket-container'));
+    const addPocketContainer = document.querySelector('.add-pocket-container');
+    if (addPocketContainer) {
+        showTooltip('add-pocket-tip', 'Нажмите, чтобы добавить карман', 'right', addPocketContainer);
+    } else {
+        console.error('Элемент с классом "add-pocket-container" не найден.');
+    }
 
     // Привязка функций к глобальному объекту window для доступа из HTML
     window.openModal = openModal;
